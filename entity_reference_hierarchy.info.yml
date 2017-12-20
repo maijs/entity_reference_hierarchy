@@ -1,0 +1,4 @@
+name: Entity reference hierarchy
+type: module
+description: Provides hierarchical entity reference field.
+core: 8.x

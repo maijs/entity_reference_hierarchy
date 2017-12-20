@@ -1,0 +1,89 @@
+<?php
+
+use Drupal\Core\Render\Element;
+
+/**
+ * Implements hook_field_info_alter().
+ *
+ * This removes "entity_reference_revisions_hierarchy" field type plugin
+ * if "entity_reference_revisions" module is not enabled.
+ */
+function entity_reference_hierarchy_field_info_alter(&$info) {
+  if (isset($info['entity_reference_revisions_hierarchy']) && !\Drupal::moduleHandler()->moduleExists('entity_reference_revisions')) {
+    unset($info['entity_reference_revisions_hierarchy']);
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info_alter().
+ *
+ * This enables "entity_reference" field formatters be applied to
+ * "entity_reference_hierarchy" and "entity_reference_revisions_hierarchy"
+ * field types.
+ */
+function entity_reference_hierarchy_field_formatter_info_alter(array &$info) {
+  foreach ($info as &$info_item) {
+    if (isset($info_item['field_types'])) {
+      if (in_array('entity_reference', $info_item['field_types'])) {
+        $info_item['field_types'][] = 'entity_reference_hierarchy';
+        $info_item['field_types'][] = 'entity_reference_revisions_hierarchy';
+      }
+      else if (in_array('entity_reference_revisions', $info_item['field_types'])) {
+        $info_item['field_types'][] = 'entity_reference_revisions_hierarchy';
+      }
+    }
+  }
+}
+
+/**
+ * Pre-processor for "field_multiple_value_form" theme.
+ *
+ * Applies only to widgets of field type "entity_reference_hierarchy".
+ *
+ * @param $variables
+ */
+function entity_reference_hierarchy_preprocess_field_multiple_value_form(&$variables) {
+  $element = $variables['element'];
+
+  if (!empty($element['#entity_reference_hierarchy'])) {
+    $table = &$variables['table'];
+    // Remove colspan on the field header cell.
+    $table['#header'][0]['colspan'] -= 1;
+    // Remove the weight header cell.
+    unset($table['#header'][1]);
+
+    foreach (Element::children($variables['element']) as $key) {
+      if (is_numeric($key)) {
+        // Remove the first column (drag handle).
+        unset($table['#rows'][$key]['data'][0]);
+        // Remove the weight column.
+        unset($table['#rows'][$key]['data'][2]);
+        // Prepare indentation.
+        $indentation = [
+          '#theme' => 'indentation',
+          '#size' => $variables['element'][$key]['depth']['#value'],
+        ];
+        // Inject indentation into the content cell.
+        array_unshift($table['#rows'][$key]['data'][1]['data'], $indentation);
+      }
+    }
+
+    // Replace tabledrag options.
+    $table['#tabledrag'] = [
+      [
+        'action' => 'match',
+        'relationship' => 'parent',
+        'group' => 'item-parent',
+        'subgroup' => 'item-parent',
+        'source' => 'item-index',
+        'hidden' => FALSE,
+      ],
+      [
+        'action' => 'depth',
+        'relationship' => 'group',
+        'group' => 'item-depth',
+        'hidden' => FALSE,
+      ],
+    ];
+  }
+}
