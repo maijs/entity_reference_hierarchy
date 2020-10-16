@@ -3,7 +3,7 @@ This is a Drupal module that provides hierarchical entity reference field.
 
 Entity reference field that comes with Drupal core allows creating a linear
 list of entity references. This module allows creating hierarchical entity
-references where each entity reference be in a parent/child relationship
+references where each entity reference can be in a parent/child relationship
 with another entity reference. It also supports revisions if used together
 with [Entity reference revisions](https://www.drupal.org/project/entity_reference_revisions) module.
 
