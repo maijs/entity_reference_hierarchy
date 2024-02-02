@@ -38,7 +38,7 @@ trait EntityReferenceHierarchyFormatterTrait {
     $result = [];
 
     foreach ($delta_outline as $delta => $branch) {
-      $item = [$elements[$delta]];
+      $item = is_array($elements[$delta]) ? $elements[$delta] : [$elements[$delta]];
 
       // Add children if available.
       if (!empty($branch)) {
