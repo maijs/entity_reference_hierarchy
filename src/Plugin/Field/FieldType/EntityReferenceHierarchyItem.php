@@ -12,7 +12,7 @@ use Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem;
  *   category = @Translation("Reference"),
  *   default_widget = "entity_reference_hierarchy_autocomplete",
  *   default_formatter = "entity_reference_label",
- *   list_class = "\Drupal\entity_reference_hierarchy\EntityReferenceFieldItemList",
+ *   list_class = "\Drupal\entity_reference_hierarchy\EntityReferenceHierarchyFieldItemList",
  * )
  */
 class EntityReferenceHierarchyItem extends EntityReferenceItem {
